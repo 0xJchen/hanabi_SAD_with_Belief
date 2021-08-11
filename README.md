@@ -1,3 +1,80 @@
+# Re-implementation of Belief Model from paper "Learned Belief Search"
+
+- belief model is build upon OP
+
+```
+belief_model.py: defined the belief model
+train_belief.py: train belief model in an RL manner
+eval_belief.py: generate belief quality
+Report.pdf: summary searching and belief modeling techniques in POGs
+convert_model.py: generate both policy and belief model in JIT format, could be used in SPARTA
+```
+
+Training & eval scheme:
+- training: approximate 20min/epoch with the following setting.
+```
+python train_belief.py \
+       --save_dir exps/lbf_sfx \
+       --num_thread 20 \
+       --num_game_per_thread 20 \
+       --method vdn \
+       --sad 1 \
+       --act_base_eps 0.1 \
+       --act_eps_alpha 7 \
+       --lr 6.25e-05 \
+       --eps 1.5e-05 \
+       --grad_clip 5 \
+       --gamma 0.999 \
+       --seed 9 \
+       --batchsize 128 \
+       --burn_in_frames 2000 \
+       --replay_buffer_size 131072 \
+       --epoch_len 1000 \
+       --priority_exponent 0.9 \
+       --priority_weight 0.6 \
+       --train_bomb 0 \
+       --eval_bomb 0 \
+       --num_player 2 \
+       --rnn_hid_dim 256 \
+       --multi_step 3 \
+       --act_device cuda:0,cuda:1 \
+       --shuffle_color 1
+```
+
+```
+python eval_belief.py \
+       --save_dir exps/test_cross_entropy \
+       --num_thread 20 \
+       --num_game_per_thread 20 \
+       --method vdn \
+       --sad 1 \
+       --act_base_eps 0.1 \
+       --act_eps_alpha 7 \
+       --lr 6.25e-05 \
+       --eps 1.5e-05 \
+       --grad_clip 5 \
+       --gamma 0.999 \
+       --seed 999 \
+       --batchsize 128 \
+       --burn_in_frames 1000 \
+       --replay_buffer_size 131072 \
+       --epoch_len 1000 \
+       --priority_exponent 0.9 \
+       --priority_weight 0.6 \
+       --train_bomb 0 \
+       --eval_bomb 0 \
+       --num_player 2 \
+       --rnn_hid_dim 256 \
+       --multi_step 3 \
+       --act_device cuda:0,cuda:1 \
+       --shuffle_color 1
+```
+
+Belief Model Result(trained after 300 epoches):
+[Belief Result](./impl.png)
+
+`Question: are we fitting to test set when training the belief model with RL manner?`
+
 # Other-Play & Simplified Action Decoder in Hanabi
 
 ## Important Update, Mar-2021
