@@ -71,7 +71,7 @@ python eval_belief.py \
 ```
 
 Belief Model Result(trained after 300 epoches):
-[Belief Result](./impl.png)
+![Belief Result](./impl.png)
 
 `Question: are we fitting to test set when training the belief model with RL manner?`
 
