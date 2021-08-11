@@ -56,6 +56,7 @@ std::tuple<rela::TensorDict, float, bool> HanabiEnv::step(
 
   // perform action for only current player
   int curPlayer = state_->CurPlayer();
+  //std::cout<<"cur_player: "<<curPlayer<<std::endl;
   int actionUid = action.at("a")[curPlayer].item<int>();
   hle::HanabiMove move = game_.GetMove(actionUid);
   maybeInversePermuteColor_(move, curPlayer);
@@ -122,6 +123,8 @@ rela::TensorDict HanabiEnv::computeFeatureAndLegalMove(
   // auto epsAccessor = eps_.accessor<float, 1>();
   // std::vector<float> eps;
   std::vector<torch::Tensor> ownHand;
+  std::vector<torch::Tensor> slHand;
+  std::vector<torch::Tensor> curPlayer;
   // std::vector<torch::Tensor> ownHandARIn;
   // std::vector<torch::Tensor> allHand;
   // std::vector<torch::Tensor> allHandARIn;
@@ -161,10 +164,17 @@ rela::TensorDict HanabiEnv::computeFeatureAndLegalMove(
 
     privS.push_back(torch::tensor(vS));
 
-    {
+    
       auto cheatObs = hle::HanabiObservation(*state_, i, true);
+    {
       auto vOwnHand = obsEncoder_.EncodeOwnHandTrinary(cheatObs);
       ownHand.push_back(torch::tensor(vOwnHand));
+    }
+    {//@wjc get own hand
+        auto cur_slHand = obsEncoder_.EncodeOwnHand(cheatObs,shuffleColor_,colorPermutes_[i]);
+        slHand.push_back(torch::tensor(cur_slHand));
+        auto cur_player = cloneState->CurPlayer();
+        curPlayer.push_back(torch::tensor(cur_player));
     }
 
     // legal moves
@@ -199,6 +209,8 @@ rela::TensorDict HanabiEnv::computeFeatureAndLegalMove(
       {"legal_move", torch::stack(legalMove, 0)},
       {"eps", torch::tensor(playerEps_)},
       {"own_hand", torch::stack(ownHand, 0)},
+      {"sl_hand",torch::stack(slHand, 0)},
+      {"cur_player",torch::stack(curPlayer, 0)},
   };
 
   return dict;

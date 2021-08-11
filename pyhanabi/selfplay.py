@@ -25,7 +25,7 @@ import utils
 
 def parse_args():
     parser = argparse.ArgumentParser(description="train dqn on hanabi")
-    parser.add_argument("--save_dir", type=str, default="exps/exp1")
+    parser.add_argument("--save_dir", type=str, default="exps/exp2")
     parser.add_argument("--method", type=str, default="vdn")
     parser.add_argument("--shuffle_obs", type=int, default=0)
     parser.add_argument("--shuffle_color", type=int, default=0)
@@ -85,6 +85,12 @@ def parse_args():
     assert args.method in ["vdn", "iql"]
     return args
 
+def print_batch(b):
+    obs=batch.obs
+    for k, v in obs.items():
+        print(k,v.shape)
+    seq_len=batch.seq_len
+    print("seq_len",seq_len.shape,seq_len)
 
 if __name__ == "__main__":
     torch.backends.cudnn.benchmark = True
@@ -217,8 +223,10 @@ if __name__ == "__main__":
 
             batch, weight = replay_buffer.sample(args.batchsize, args.train_device)
             stopwatch.time("sample data")
-
+            # print_batch(batch)
+            # print(batch.keys)
             loss, priority = agent.loss(batch, args.pred_weight, stat)
+            #print(priority.shape)#[80,128]
             priority = rela.aggregate_priority(
                 priority.cpu(), batch.seq_len.cpu(), args.eta
             )
@@ -269,7 +277,7 @@ if __name__ == "__main__":
         else:
             force_save_name = None
         model_saved = saver.save(
-            None, agent.online_net.state_dict(), score, force_save_name=force_save_name
+            None, agent.online_net.state_dict(), score,force_save_name=force_save_name
         )
         print(
             "epoch %d, eval score: %.4f, perfect: %.2f, model saved: %s"

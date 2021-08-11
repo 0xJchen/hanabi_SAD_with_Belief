@@ -206,10 +206,10 @@ class PrioritizedReplay {
   }
 
   std::tuple<DataType, torch::Tensor> sample(int batchsize, const std::string& device) {
-    if (!sampledIds_.empty()) {
-      std::cout << "Error: previous samples' priority has not been updated." << std::endl;
-      assert(false);
-    }
+    //if (!sampledIds_.empty()) {
+      //std::cout << "Error: previous samples' priority has not been updated." << std::endl;
+      //assert(false);
+    //}
 
     DataType batch;
     torch::Tensor priority;

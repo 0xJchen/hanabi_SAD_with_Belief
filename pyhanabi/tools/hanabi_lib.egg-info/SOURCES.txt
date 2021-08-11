@@ -1,0 +1,5 @@
+test_setup.py
+hanabi_lib.egg-info/PKG-INFO
+hanabi_lib.egg-info/SOURCES.txt
+hanabi_lib.egg-info/dependency_links.txt
+hanabi_lib.egg-info/top_level.txt

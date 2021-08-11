@@ -31,7 +31,7 @@ class PublicLSTMNet(torch.jit.ScriptModule):
 
         self.hid_dim = hid_dim
         self.out_dim = out_dim
-        self.num_ff_layer = 1
+        self.num_fc_layer = 1
         self.num_lstm_layer = num_lstm_layer
 
         self.priv_net = nn.Sequential(
@@ -44,7 +44,7 @@ class PublicLSTMNet(torch.jit.ScriptModule):
         )
 
         ff_layers = [nn.Linear(self.publ_in_dim, self.hid_dim), nn.ReLU()]
-        for i in range(1, self.num_ff_layer):
+        for i in range(1, self.num_fc_layer):
             ff_layers.append(nn.Linear(self.hid_dim, self.hid_dim))
             ff_layers.append(nn.ReLU())
         self.publ_net = nn.Sequential(*ff_layers)

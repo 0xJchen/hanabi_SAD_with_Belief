@@ -11,6 +11,7 @@ torch::Tensor aggregatePriority(torch::Tensor priority, torch::Tensor seqLen, fl
   assert(priority.device().is_cpu() && seqLen.device().is_cpu());
   auto mask = torch::arange(0, priority.size(0));
   mask = (mask.unsqueeze(1) < seqLen.unsqueeze(0)).to(torch::kFloat32);
+  //std::cout<<"pri+mask size: "<<priority.sizes()<<" "<<mask.sizes()<<std::endl;
   assert(priority.sizes() == mask.sizes());
   priority = priority * mask;
 
