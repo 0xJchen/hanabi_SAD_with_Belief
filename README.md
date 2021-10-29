@@ -1,5 +1,7 @@
 # Re-implementation of Belief Model from paper "Learned Belief Search"
 
+## Update Oct, 2021: heng yuan has released the official version of the [Belief Model](https://github.com/facebookresearch/off-belief-learning/tree/main/pyhanabi), check their implementation. 
+
 - belief model is build upon OP
 
 ```
